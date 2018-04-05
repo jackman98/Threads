@@ -15,8 +15,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     logic.cpp \
-    backend.cpp \
-    draw.cpp
+    draw.cpp \
+    data.cpp
 
 RESOURCES += qml.qrc
 
@@ -33,5 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     logic.h \
-    backend.h \
-    draw.h
+    draw.h \
+    data.h
