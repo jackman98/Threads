@@ -1,12 +1,19 @@
 #include "logic.h"
 #include <QDebug>
 #include <QThread>
+#include <QTest>
 #include <QQmlEngine>
 #include <QQmlComponent>
 
 Logic::Logic(QObject *parent) : QObject(parent)
 {
     setRunning(true);
+    spy = new QSignalSpy(this, &Logic::sendCoord);
+}
+
+Logic::~Logic()
+{
+    delete spy;
 }
 
 bool Logic::running() const
@@ -26,7 +33,7 @@ int Logic::y() const
 
 void Logic::run()
 {
-    qDebug() << m_x << m_y;
+    //qDebug() << m_x << m_y;
     bool isGrow = true;
     while (m_running) {
         if (isGrow) {
@@ -42,6 +49,14 @@ void Logic::run()
             }
         }
         emit sendCoord(m_x, m_y);
+
+        QList<QVariant> args = spy->takeFirst();
+        qDebug() << args.at(0) << args.at(1);
+
+        QVERIFY2(args.at(0).type() == QVariant::Int, "Error! Signal missed");
+        QVERIFY2(args.at(1).type() == QVariant::Int, "Error! Signal missed");
+
+
         QThread::msleep(20);
     }
     emit finished();
@@ -58,7 +73,7 @@ void Logic::setRunning(bool running)
 
 void Logic::setX(int x)
 {
-    qDebug() << "Logic X:" << x;
+    //qDebug() << "Logic X:" << x;
     if (m_x == x)
         return;
 
@@ -68,7 +83,7 @@ void Logic::setX(int x)
 
 void Logic::setY(int y)
 {
-    qDebug() << "Logic Y:" << y;
+    //qDebug() << "Logic Y:" << y;
     if (m_y == y)
         return;
 

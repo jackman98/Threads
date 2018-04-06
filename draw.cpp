@@ -11,7 +11,7 @@ void Draw::setCoord(int x, int y)
 {
     tempCoordX = x;
     tempCoordY = y;
-    qDebug() << x << y;
+    //qDebug() << x << y;
 }
 
 int Draw::coordY() const
@@ -31,7 +31,7 @@ bool Draw::running() const
 
 void Draw::setCoordY(int coordY)
 {
-    qDebug() << "Draw Y:" << coordY;
+    //qDebug() << "Draw Y:" << coordY;
     if (m_coordY == coordY)
         return;
 
@@ -41,7 +41,7 @@ void Draw::setCoordY(int coordY)
 
 void Draw::setCoordX(int coordX)
 {
-    qDebug() << "Draw X:" << coordX;
+    //qDebug() << "Draw X:" << coordX;
 
     if (m_coordX == coordX)
         return;

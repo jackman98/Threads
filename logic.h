@@ -2,6 +2,7 @@
 #define LOGIC_H
 
 #include <QObject>
+#include <QSignalSpy>
 
 class Logic : public QObject
 {
@@ -15,9 +16,12 @@ class Logic : public QObject
     int m_x;
     int m_y;
     int m_heightWindow;
+    QSignalSpy *spy;
 
 public:
     explicit Logic(QObject *parent = nullptr);
+
+    ~Logic();
 
     bool running() const;
 

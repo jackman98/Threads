@@ -4,13 +4,16 @@ import QtQuick.Controls 2.2
 
 ApplicationWindow {
     visible: true
-    objectName: "mainWindow"
     width: 640
     height: 480
     title: qsTr("Hello World")
     Component.onCompleted: {
         console.log(height)
         myData.setHeightWindow(height)
+    }
+
+    onClosing: {
+        myData.stopThreads()
     }
 
     Rectangle {

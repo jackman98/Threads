@@ -1,4 +1,4 @@
-QT += quick
+QT += quick testlib
 CONFIG += c++11 qt
 
 # The following define makes your compiler emit warnings if you use

@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     Data data;
-
+//    QObject::connect(, &QCoreApplication::destroyed, &data, &Data::stopThreads);
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("myData", &data);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

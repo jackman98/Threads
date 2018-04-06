@@ -15,7 +15,7 @@ Data::Data(QObject *parent) : QObject(parent)
     connect(&logic, &Logic::finished, &logicThread, &QThread::quit);
     connect(&draw, &Draw::finished, &drawThread, &QThread::quit);
     connect(this, &Data::destroyed, this, &Data::save);
-    saveFile.setFileName("save.txt");
+   saveFile.setFileName("save.txt");
     if (saveFile.exists()) {
         saveFile.open(QIODevice::ReadOnly);
         QString str = saveFile.readAll();
