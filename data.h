@@ -6,6 +6,7 @@
 #include "draw.h"
 #include <QThread>
 #include <QFile>
+#include <QDebug>
 
 class Data : public QObject
 {
@@ -15,15 +16,18 @@ class Data : public QObject
 
     int m_x;
     int m_y;
-    Logic logic;
+
+	Logic logic;
     Draw draw;
-    QThread logicThread;
+	QThread logicThread;
     QThread drawThread;
     QFile saveFile;
+	QSignalSpy *m_spy;
 
 public:
     explicit Data(QObject *parent = nullptr);
 
+	~Data();
     int x() const;
     int y() const;
 
@@ -40,7 +44,6 @@ public slots:
     void stopThreads();
     void startThreads();
     void resetCoord();
-    void save();
     void setHeightWindow(int heightWindow);
 };
 

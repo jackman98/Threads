@@ -12,10 +12,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
-    Data data;
-//    QObject::connect(, &QCoreApplication::destroyed, &data, &Data::stopThreads);
+	Data data;
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("myData", &data);
+	engine.rootContext()->setContextProperty("myData", &data);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;

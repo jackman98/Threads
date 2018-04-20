@@ -4,18 +4,17 @@
 
 Data::Data(QObject *parent) : QObject(parent)
 {
-//    connect(this, &Data::xChanged, &logic, &Logic::setX, Qt::DirectConnection);
-//    connect(this, &Data::yChanged, &logic, &Logic::setY, Qt::DirectConnection);
+	m_spy = new QSignalSpy(&logic, SIGNAL(finished()));
+
     connect(this, &Data::heightWindowChanged, &logic, &Logic::setHeightWindow, Qt::DirectConnection);
     connect(&draw, &Draw::coordXChanged, this, &Data::setX);
     connect(&draw, &Draw::coordYChanged, this, &Data::setY);
     connect(&logicThread, &QThread::started, &logic, &Logic::run);
     connect(&drawThread, &QThread::started, &draw, &Draw::run);
     connect(&logic, &Logic::sendCoord, &draw, &Draw::setCoord, Qt::DirectConnection);
-    connect(&logic, &Logic::finished, &logicThread, &QThread::quit);
-    connect(&draw, &Draw::finished, &drawThread, &QThread::quit);
-    connect(this, &Data::destroyed, this, &Data::save);
-   saveFile.setFileName("save.txt");
+	connect(&logic, &Logic::finished, &logicThread, &QThread::quit, Qt::DirectConnection);
+	connect(&draw, &Draw::finished, &drawThread, &QThread::quit, Qt::DirectConnection);
+    saveFile.setFileName("save.txt");
     if (saveFile.exists()) {
         saveFile.open(QIODevice::ReadOnly);
         QString str = saveFile.readAll();
@@ -33,9 +32,17 @@ Data::Data(QObject *parent) : QObject(parent)
     }
 }
 
+Data::~Data()
+{
+	qDebug() << "Spy:" << m_spy->count();
+	delete m_spy;
+	qDebug() << "data destoyed";
+
+}
+
 int Data::x() const
 {
-    return m_x;
+	return m_x;
 }
 
 int Data::y() const
@@ -45,7 +52,6 @@ int Data::y() const
 
 void Data::setX(int x)
 {
-//    qDebug() << "Data X" << x;
     if (m_x == x)
         return;
 
@@ -55,7 +61,6 @@ void Data::setX(int x)
 
 void Data::setY(int y)
 {
-//    qDebug() << "Data Y" << y;
     if (m_y == y)
         return;
 
@@ -65,12 +70,16 @@ void Data::setY(int y)
 
 void Data::stopThreads()
 {
-    logic.setRunning(false);
-    draw.setRunning(false);
-    saveFile.open(QIODevice::WriteOnly);
-    QTextStream out(&saveFile);
-    out << QString::number(x()) << " " << QString::number(y());
-    saveFile.close();
+	logic.setRunning(false);
+	draw.setRunning(false);
+	logicThread.wait();
+	drawThread.wait();
+	if (saveFile.open(QIODevice::WriteOnly)) {
+		qDebug() << "opened";
+	}
+	QTextStream out(&saveFile);
+	out << QString::number(x()) << " " << QString::number(y());
+	saveFile.close();
 }
 
 void Data::startThreads()
@@ -91,11 +100,6 @@ void Data::resetCoord()
     logic.setY(0);
     draw.setCoordX(0);
     draw.setCoordY(0);
-}
-
-void Data::save()
-{
-
 }
 
 void Data::setHeightWindow(int heightWindow)

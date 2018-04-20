@@ -13,7 +13,8 @@ Logic::Logic(QObject *parent) : QObject(parent)
 
 Logic::~Logic()
 {
-    delete spy;
+	qDebug() << "logic destroyed";
+	delete spy;
 }
 
 bool Logic::running() const

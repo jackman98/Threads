@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QDebug>
 
 class Logic : public QObject
 {
@@ -20,8 +21,7 @@ class Logic : public QObject
 
 public:
     explicit Logic(QObject *parent = nullptr);
-
-    ~Logic();
+~Logic();
 
     bool running() const;
 
