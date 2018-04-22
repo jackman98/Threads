@@ -6,6 +6,7 @@
 #include "draw.h"
 #include <QThread>
 #include <QFile>
+#include "database.h"
 #include <QDebug>
 
 class Data : public QObject
@@ -22,6 +23,7 @@ class Data : public QObject
 	QThread logicThread;
     QThread drawThread;
     QFile saveFile;
+    Database db;
 	QSignalSpy *m_spy;
 
 public:
@@ -39,6 +41,7 @@ signals:
     void heightWindowChanged(int heightWindow);
 
 public slots:
+    void getCoord(QString figure);
     void setX(int x);
     void setY(int y);
     void stopThreads();

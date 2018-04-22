@@ -42,6 +42,7 @@ ApplicationWindow {
                 myData.startThreads()
             }
         }
+
         Button {
             anchors.top: parent.top
             text: "Reset"

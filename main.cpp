@@ -2,9 +2,6 @@
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QObject>
-//#include <QThread>
-//#include "logic.h"
-//#include "draw.h"
 #include "data.h"
 
 int main(int argc, char *argv[])

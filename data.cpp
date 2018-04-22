@@ -4,7 +4,7 @@
 
 Data::Data(QObject *parent) : QObject(parent)
 {
-	m_spy = new QSignalSpy(&logic, SIGNAL(finished()));
+    m_spy = new QSignalSpy(&logic, &Logic::sendCoord);
 
     connect(this, &Data::heightWindowChanged, &logic, &Logic::setHeightWindow, Qt::DirectConnection);
     connect(&draw, &Draw::coordXChanged, this, &Data::setX);
@@ -14,22 +14,26 @@ Data::Data(QObject *parent) : QObject(parent)
     connect(&logic, &Logic::sendCoord, &draw, &Draw::setCoord, Qt::DirectConnection);
 	connect(&logic, &Logic::finished, &logicThread, &QThread::quit, Qt::DirectConnection);
 	connect(&draw, &Draw::finished, &drawThread, &QThread::quit, Qt::DirectConnection);
-    saveFile.setFileName("save.txt");
-    if (saveFile.exists()) {
-        saveFile.open(QIODevice::ReadOnly);
-        QString str = saveFile.readAll();
-        QStringList listStr = str.split(" ");
-        logic.setX(listStr[0].toInt());
-        logic.setY(listStr[1].toInt());
-        draw.setCoordX(listStr[0].toInt());
-        draw.setCoordY(listStr[1].toInt());
-        saveFile.close();
-    }
-    else {
-        logic.setX(0);
-        logic.setY(0);
-        qDebug() << "Not exists";
-    }
+    db.connectToDataBase();
+    db.showTables();
+    db.insertIntoCoordinates("circle", 20, 20);
+    getCoord("circle");
+//    saveFile.setFileName("save.txt");
+//    if (saveFile.exists()) {
+//        saveFile.open(QIODevice::ReadOnly);
+//        QString str = saveFile.readAll();
+//        QStringList listStr = str.split(" ");
+//        logic.setX(listStr[0].toInt());
+//        logic.setY(listStr[1].toInt());
+//        draw.setCoordX(listStr[0].toInt());
+//        draw.setCoordY(listStr[1].toInt());
+//        saveFile.close();
+//    }
+//    else {
+//        logic.setX(0);
+//        logic.setY(0);
+//        qDebug() << "Not exists";
+//    }
 }
 
 Data::~Data()
@@ -48,6 +52,19 @@ int Data::x() const
 int Data::y() const
 {
     return m_y;
+}
+
+void Data::getCoord(QString figure)
+{
+    QSqlQuery query;
+    query.prepare("select x, y from coordinates where figure = :figure;");
+    query.bindValue(":figure", figure);
+    qDebug() << query.exec();
+    while (query.next()) {
+        setX(query.value(0).toInt());
+        setY(query.value(1).toInt());
+        break;
+    }
 }
 
 void Data::setX(int x)
@@ -74,12 +91,13 @@ void Data::stopThreads()
 	draw.setRunning(false);
 	logicThread.wait();
 	drawThread.wait();
-	if (saveFile.open(QIODevice::WriteOnly)) {
-		qDebug() << "opened";
-	}
-	QTextStream out(&saveFile);
-	out << QString::number(x()) << " " << QString::number(y());
-	saveFile.close();
+//	if (saveFile.open(QIODevice::WriteOnly)) {
+//		qDebug() << "opened";
+//	}
+//	QTextStream out(&saveFile);
+//	out << QString::number(x()) << " " << QString::number(y());
+//	saveFile.close();
+    db.updateCoordinates("circle", x(), y());
 }
 
 void Data::startThreads()

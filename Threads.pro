@@ -1,4 +1,4 @@
-QT += quick testlib
+QT += quick testlib sql
 CONFIG += c++11 qt
 
 # The following define makes your compiler emit warnings if you use
@@ -16,7 +16,8 @@ SOURCES += \
         main.cpp \
     logic.cpp \
     draw.cpp \
-    data.cpp
+    data.cpp \
+    database.cpp
 
 RESOURCES += qml.qrc
 
@@ -34,4 +35,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     logic.h \
     draw.h \
-    data.h
+    data.h \
+    database.h
